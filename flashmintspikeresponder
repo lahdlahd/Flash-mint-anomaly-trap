@@ -1,0 +1,53 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+/// @title FlashMintSpikeResponder
+/// @notice Receives alerts from FlashMintSpikeTrap when a spike is detected
+/// @dev This contract is meant for testing / logging anomaly responses
+contract FlashMintSpikeResponder {
+
+    struct SpikeRecord {
+        uint256 supply;
+        uint256 spikePercent;
+        uint256 timestamp;
+        uint256 blockNumber;
+    }
+
+    SpikeRecord public lastSpike;
+
+    event FlashMintSpikeDetected(
+        uint256 supply,
+        uint256 spikePercent,
+        uint256 timestamp,
+        uint256 blockNumber
+    );
+
+    /// @notice Called automatically by Drosera when the trap triggers
+    /// @param supply The current token total supply at spike detection
+    /// @param spikePercent How big the spike was (percentage)
+    function handleFlashMintSpike(uint256 supply, uint256 spikePercent) external {
+        lastSpike = SpikeRecord({
+            supply: supply,
+            spikePercent: spikePercent,
+            timestamp: block.timestamp,
+            blockNumber: block.number
+        });
+
+        emit FlashMintSpikeDetected(
+            supply,
+            spikePercent,
+            block.timestamp,
+            block.number
+        );
+    }
+
+    /// @notice Read the last recorded spike
+    function getLastSpike()
+        external
+        view
+        returns (uint256 supply, uint256 spikePercent, uint256 timestamp, uint256 blockNumber)
+    {
+        SpikeRecord memory s = lastSpike;
+        return (s.supply, s.spikePercent, s.timestamp, s.blockNumber);
+    }
+}
