@@ -1,0 +1,30 @@
+name = "flash-mint-spike-trap"
+description = "Detects abnormal ERC20 totalSupply spikes using a stateless, window-based Drosera trap"
+
+# ------------------------------------------------
+# Sampling configuration
+# ------------------------------------------------
+
+# Number of block samples passed to shouldRespond()
+# data[0] = newest, data[1] = previous
+block_sample_size = 2
+
+# Sample every block
+block_sample_interval = 1
+
+# ------------------------------------------------
+# Response configuration
+# ------------------------------------------------
+
+# Name of the responder contract (must match your responder)
+response_contract = "FlashMintResponder"
+
+# Deployed responder address (placeholder is OK for review)
+response_address = "0x0000000000000000000000000000000000000000"
+
+# ------------------------------------------------
+# Metadata
+# ------------------------------------------------
+
+severity = "high"
+category = "supply-anomaly"
